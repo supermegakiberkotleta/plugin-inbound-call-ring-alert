@@ -18,6 +18,15 @@ export default class InboundCallRingAlert extends FlexPlugin {
       process.env.REACT_APP_RINGTONE_URL
     );
 
+    // Подписка на afterRejectTask для фиксации отказа
+    flex.Actions.addListener('afterRejectTask', async (payload) => {
+      const task = payload.task;
+      const attrs = task?.attributes ?? {};
+      const rejected = new Set(attrs.rejected_workers || []);
+      rejected.add(manager.workerClient.sid);
+      await task.setAttributes({ ...attrs, rejected_workers: [...rejected] });
+    });
+
     const pausableResStatus = ['accepted', 'canceled', 'rejected', 'rescinded', 'timeout'];
 
     manager.workerClient.on('reservationCreated', function (reservation) {
