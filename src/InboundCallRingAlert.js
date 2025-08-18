@@ -1,4 +1,4 @@
-import { FlexPlugin } from 'flex-plugin';
+import { FlexPlugin } from '@twilio/flex-plugin';
 const PLUGIN_NAME = 'InboundCallRingAlert';
 
 export default class InboundCallRingAlert extends FlexPlugin {
@@ -21,12 +21,16 @@ export default class InboundCallRingAlert extends FlexPlugin {
     const pausableResStatus = ['accepted', 'canceled', 'rejected', 'rescinded', 'timeout'];
 
     manager.workerClient.on('reservationCreated', function (reservation) {
-      if (reservation.task.taskChannelUniqueName === 'voice') {
+      if (
+        reservation.task.taskChannelUniqueName === 'voice' &&
+        reservation.task.attributes &&
+        reservation.task.attributes.direction === 'inbound'
+      ) {
         manager.voiceClient.audio.ringtoneDevices.get().forEach(device => {
           audio.setSinkId(device.deviceId);
         });
         audio.play();
-      };
+      }
 
       pausableResStatus.forEach((pausableResStatus) => {
         reservation.on(pausableResStatus, () => {
