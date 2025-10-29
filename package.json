@@ -1,9 +1,14 @@
 {
   "name": "plugin-inbound-call-ring-alert",
-  "version": "0.0.6",
+  "version": "0.0.18",
   "private": true,
   "scripts": {
-    "postinstall": "flex-plugin pre-script-check"
+    "preinstall": "npx flex-plugin pre-script-check",
+    "start": "twilio flex:plugins:start",
+    "build": "twilio flex:plugins:build",
+    "deploy": "twilio flex:plugins:deploy",
+    "release": "twilio flex:plugins:release",
+    "test": "twilio flex:plugins:test"
   },
   "dependencies": {
     "@twilio/flex-plugin": "^7.1.2",
